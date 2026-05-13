@@ -1,34 +1,57 @@
--- Fullscreen White Screen + Toggle Button (Centered Bottom) — WORKING ✅
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
 
 local gui = Instance.new("ScreenGui")
-gui.Name = "AntiLagGUI"
+gui.Name = "AntiLag_Pro"
 gui.IgnoreGuiInset = true
 gui.ResetOnSpawn = false
-pcall(function() gui.Parent = game:GetService("CoreGui") end)
 
--- White screen
-local white = Instance.new("Frame", gui)
-white.BackgroundColor3 = Color3.new(1, 1, 1)
-white.Size = UDim2.new(1, 0, 1, 0)
-white.Position = UDim2.new(0, 0, 0, 0)
-white.Visible = false
+local success, err = pcall(function()
+    gui.Parent = CoreGui
+end)
+if not success then
+    gui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+end
 
--- Toggle Button
-local toggle = Instance.new("TextButton", gui)
-toggle.Size = UDim2.new(0, 150, 0, 40)
-toggle.AnchorPoint = Vector2.new(0.5, 1)
-toggle.Position = UDim2.new(0.5, 0, 1, -20)
-toggle.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-toggle.TextColor3 = Color3.new(1, 1, 1)
-toggle.Text = "Anti-Lag: OFF"
-toggle.Font = Enum.Font.SourceSansBold
-toggle.TextScaled = true
+local whiteScreen = Instance.new("Frame")
+whiteScreen.Name = "Overlay"
+whiteScreen.BackgroundColor3 = Color3.new(1, 1, 1)
+whiteScreen.Size = UDim2.fromScale(1, 1)
+whiteScreen.Visible = false
+whiteScreen.ZIndex = 1
+whiteScreen.Parent = gui
 
--- Toggle logic
-local state = false
-toggle.MouseButton1Click:Connect(function()
-	state = not state
-	white.Visible = state
-	toggle.Text = state and "Anti-Lag: ON" or "Anti-Lag: OFF"
-	toggle.BackgroundColor3 = state and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(0, 170, 255)
+local toggleBtn = Instance.new("TextButton")
+toggleBtn.Name = "ToggleButton"
+toggleBtn.Size = UDim2.new(0, 160, 0, 45)
+toggleBtn.Position = UDim2.new(0.5, 0, 1, -30)
+toggleBtn.AnchorPoint = Vector2.new(0.5, 1)
+toggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+toggleBtn.Text = "Anti-Lag: OFF"
+toggleBtn.TextColor3 = Color3.new(1, 1, 1)
+toggleBtn.Font = Enum.Font.GothamBold
+toggleBtn.TextSize = 14
+toggleBtn.ZIndex = 2
+toggleBtn.Parent = gui
+
+local btnCorner = Instance.new("UICorner")
+btnCorner.CornerRadius = UDim.new(0, 8)
+btnCorner.Parent = toggleBtn
+
+local uiStroke = Instance.new("UIStroke")
+uiStroke.Color = Color3.fromRGB(255, 255, 255)
+uiStroke.Thickness = 1.5
+uiStroke.Transparency = 0.8
+uiStroke.Parent = toggleBtn
+
+local isActive = false
+
+toggleBtn.MouseButton1Click:Connect(function()
+    isActive = not isActive
+    
+    whiteScreen.Visible = isActive
+    toggleBtn.Text = isActive and "Anti-Lag: ON" or "Anti-Lag: OFF"
+    
+    local targetColor = isActive and Color3.fromRGB(46, 204, 113) or Color3.fromRGB(30, 30, 30)
+    TweenService:Create(toggleBtn, TweenInfo.new(0.2), {BackgroundColor3 = targetColor}):Play()
 end)
