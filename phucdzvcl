@@ -75,7 +75,6 @@ UserInputService.InputBegan:Connect(function(input, processed)
     end
 end)
 
--- Logic kéo thả (thay thế frame.Draggable)
 local dragging, dragInput, dragStart, startPos
 frame.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
